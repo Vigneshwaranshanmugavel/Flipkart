@@ -1,0 +1,65 @@
+package com.project;
+
+import java.awt.AWTException;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class Flipkart {
+	
+	private static void placeOrder() throws AWTException, InterruptedException {
+		System.setProperty("webdriver.chrome.driver","E:\\JAVA PROGRAMS\\Flipkart\\Chromedriver\\chromedriver.exe");
+		WebDriver driver = new ChromeDriver();
+		driver.get("https://www.flipkart.com/");
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
+		String mainpage = driver.getWindowHandle();
+		System.out.println("Main Page"+ mainpage);
+		
+		WebElement searchbox = driver.findElement(By.xpath("//input[@type='text']"));
+		searchbox.sendKeys("laptop");
+		searchbox.submit();
+		
+		driver.findElement(By.xpath("//div[contains(text(),'Lenovo V15 Series AMD')]")).click();
+		
+		Set<String> allPage = driver.getWindowHandles();
+		for(String page : allPage) {
+			if(!page.equals(mainpage)) {
+				driver.switchTo().window(page);
+				break;
+			}
+		}
+		
+		driver.findElement(By.xpath("//button[normalize-space()='Add to cart']")).click();
+		driver.findElement(By.xpath("//span[text()='Cart']")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//span[text()='Place Order']")).click();
+		
+		driver.findElement(By.xpath("//input[@type='text']")).sendKeys("6380027683");
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		WebElement otp = driver.findElement(By.xpath("//form[@autocomplete='on']/child::div/following-sibling::div/child::input"));
+		Scanner s = new Scanner(System.in);
+		String ans = s.next();
+		otp.sendKeys(ans);
+		
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		
+		driver.findElement(By.xpath("//button[text()='Deliver Here']")).click();
+		
+		driver.findElement(By.xpath("//button[text()='CONTINUE']")).click();
+		
+		driver.findElement(By.xpath("//button[text()='Accept & Continue']")).click();
+		
+		driver.findElement(By.id("PHONEPE")).click();
+		
+}
+	
+	public static void main(String[] args) throws AWTException, InterruptedException {
+		placeOrder();
+	}
+
+}
